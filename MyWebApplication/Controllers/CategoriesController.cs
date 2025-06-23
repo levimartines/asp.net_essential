@@ -15,10 +15,10 @@ public class CategoriesController(AppDbContext context) : ControllerBase
         return context.Categories.Include(p => p.Products).AsNoTracking().ToList();
     }
 
-    [HttpGet("{id:int}", Name = "Categories/GetById")]
-    public ActionResult<Category> GetById(int id)
+    [HttpGet("{id:int:min(1)}", Name = "Categories/GetById")]
+    public async Task<ActionResult<Category>> GetById(int id)
     {
-        var category = context.Categories.FirstOrDefault(p => p.Id == id);
+        var category = await context.Categories.FirstOrDefaultAsync(p => p.Id == id);
         if (category is null)
             return NotFound($"Category with id={id} not found");
 
