@@ -2,6 +2,8 @@ using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using MyWebApplication.Context;
 using MyWebApplication.Extensions;
+using MyWebApplication.Filters;
+using MyWebApplication.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +18,14 @@ var dbConnection = builder.Configuration.GetConnectionString("DefaultConnection"
 builder.Services.AddDbContext<AppDbContext>(options => 
     options.UseMySql(dbConnection, ServerVersion.AutoDetect(dbConnection)));
 
-builder.Services.AddControllers()
+builder.Services.AddControllers(options => options.Filters.Add(typeof(ApiExceptionFilter)))
     .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+builder.Services.AddScoped<ApiLoggingFilter>();
+builder.Logging.AddProvider(new CustomLoggerProvider(new CustomLoggerProviderConfiguration()
+{
+    LogLevel = LogLevel.Debug,
+}));
 
 var app = builder.Build();
 

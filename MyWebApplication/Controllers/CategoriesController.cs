@@ -1,17 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyWebApplication.Context;
+using MyWebApplication.Filters;
 using MyWebApplication.Models;
 
 namespace MyWebApplication.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class CategoriesController(AppDbContext context) : ControllerBase
+public class CategoriesController(AppDbContext context, ILogger<CategoriesController> logger) : ControllerBase
 {
     [HttpGet]
+    [ServiceFilter(typeof(ApiLoggingFilter))]
     public ActionResult<IEnumerable<Category>> Get()
     {
+        logger.LogInformation("#######");
         return context.Categories.Include(p => p.Products).AsNoTracking().ToList();
     }
 

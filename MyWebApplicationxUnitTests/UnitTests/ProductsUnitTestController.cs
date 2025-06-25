@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 using MyWebApplication.Context;
 using MyWebApplication.Controllers;
 using MyWebApplication.Models;
@@ -7,7 +9,7 @@ namespace MyWebApplicationxUnitTests.UnitTests;
 
 public class ProductsUnitTestController
 {
-    public static DbContextOptions<AppDbContext> DbContextOptions { get; }
+    private static DbContextOptions<AppDbContext> DbContextOptions { get; }
 
     static ProductsUnitTestController()
     {
@@ -30,7 +32,8 @@ public class ProductsUnitTestController
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new CategoriesController(context);
+        var loggerMock = new Mock<ILogger<CategoriesController>>();
+        var controller = new CategoriesController(context, loggerMock.Object);
 
         // Act
         var result = controller.Get();
