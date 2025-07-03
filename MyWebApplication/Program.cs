@@ -20,6 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(dbConnection, ServerVersion.AutoDetect(dbConnection)));
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.Services.AddControllers(options => options.Filters.Add(typeof(ApiExceptionFilter)))
     .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
